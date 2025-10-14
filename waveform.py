@@ -35,7 +35,7 @@ CORS(app)
 # -----------------------------
 # Groq API setup
 # -----------------------------
-#GROQ_API_KEY = "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"
+#GROQ_API_KEY = ""
 #groq_client = Groq(api_key=GROQ_API_KEY)
 
 
