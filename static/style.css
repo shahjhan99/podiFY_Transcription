@@ -1,0 +1,149 @@
+/* General */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #00106a, #4a148c, #6a1b9a);
+  color: #fff;
+}
+
+.app-title {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 28px;
+  
+}
+
+/* Layout */
+.main-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  padding: 30px;
+}
+
+/* Upload Section */
+.upload-section {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px dashed #9c27b0;
+  padding: 10px;
+  text-align: center;
+  border-radius: 10px;
+  transition: 0.3s;
+}
+.upload-section:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+.upload-section label {
+  
+  cursor: pointer;
+  display: block;
+  margin-bottom: 10px;
+}
+input[type="file"] {
+  display: none;
+}
+.process-btn {
+  margin-top: 15px;
+  padding: 10px 20px;
+  border: none;
+  background: #9c27b0;
+  color: #fff;
+  border-radius: 8px;
+  
+  cursor: pointer;
+  transition: 0.3s;
+}
+.process-btn:hover {
+  background: #ba68c8;
+}
+
+.wave-Analysis-btn{
+  margin-top: 15px;
+  padding: 10px 20px;
+  border: none;
+  background: #9c27b0;
+  color: #fff;
+  border-radius: 8px;
+  
+  cursor: pointer;
+  transition: 0.3s;
+}
+.wave-Analysis-btn:hover {
+  background: #ba68c8;
+}
+
+
+/* Media Preview */
+#videoPreview {
+  margin-top: 20px;
+  width: 100%;
+  border-radius: 10px;
+  box-shadow: 0px 0px 12px rgba(0,0,0,0.5);
+}
+
+/* Right Panel */
+.right-panel .box {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  min-height: 200px;
+  box-shadow: 0px 0px 12px rgba(0,0,0,0.4);
+}
+.right-panel h3 {
+  margin-top: 0;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+  padding-bottom: 8px;
+  font-size: 18px;
+  color: #ffeb3b;
+}
+.waveform-section h3 {
+  margin-top: 0;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+  padding-bottom: 8px;
+  font-size: 18px;
+  color: #ffeb3b;
+}
+/* Waveform Section */
+.waveform-section {
+  text-align: center;
+  margin: 20px;
+  background: rgba(255,255,255,0.05);
+  padding: 20px;
+  border-radius: 12px;
+}
+video {
+  width: 100%;        /* keep full width of panel */
+  max-width: 500px;   /* optional: limit maximum width */
+  height: 280px;      /* fixed height */
+  object-fit: cover;  /* crop video if aspect ratio differs */
+  border-radius: 8px;
+  background: #000;
+  margin: 0 auto;     /* center inside panel */
+  display: block;
+}
+/* Layout */
+.main-container {
+  display: grid;
+  grid-template-columns: 300px 1fr;  /* Left panel fixed 300px, right takes rest */
+  gap: 20px;
+  padding: 30px;
+}
+
+/* Left panel (upload + video preview + button) */
+/* Left panel (upload + video preview + button) */
+.left-panel {
+  padding: 15px;
+  border-right: 1.5px solid #ddd;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Right panel (transcription + summary) */
+.right-panel {
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}

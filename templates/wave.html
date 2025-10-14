@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PodiFY Transcription</title>
+
+  <!-- ==========================
+       External Styles & Scripts
+  ========================== -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='wave.css') }}" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/hammer.js@2.0.8"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@1.2.1"></script>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <!-- Link to your JS -->
+  <script src="static/navbar.js"></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='navbar-Style.css') }}" />
+</head>
+
+<body>
+  <!-- ✅ Vertical Navbar -->
+   <!-- ✅ Horizontal Navbar (not fixed) -->
+    <nav class="navbar-vertical">
+
+
+        <button class="nav-btn" id="homeBtn" style="padding-left:6px;"> 
+            <img src="{{ url_for('static', filename='icons/refresh.png') }}" alt="Home" class="nav-icon">
+            <span class="btn-text">Refresh</span>
+        </button>
+
+        <button class="nav-btn" id="transcriptionBtn2">
+            <img src="{{ url_for('static', filename='icons/file(1).png') }}" alt="Transcription" class="nav-icon">
+            <span class="btn-text">Transcription</span>
+        </button>
+
+        <button class="nav-btn" id="tranSummaryBtn2">
+            <img src="{{ url_for('static', filename='icons/report  (1).png') }}" alt="Summary" class="nav-icon">
+            <span class="btn-text" style="font-size: small;">Transcription&<br>Summary</span>
+        </button>
+
+        <button class="nav-btn" id="openPopup">
+            <img src="{{ url_for('static', filename='icons/podcast (1).png') }}" alt="Uploads" class="nav-icon">
+            <span class="btn-text">Uploads</span>
+        </button>
+
+
+
+    </nav>
+
+  <style>
+    /* Placeholder for popup custom styles if needed */
+  </style>
+
+  <!-- ==========================
+       Popup Overlay for Uploaded Files
+  ========================== -->
+  <div id="popupOverlay">
+    <div id="popupContainer">
+      <label id="closePopup">X</label>
+      <h2>Processed Files...!</h2>
+      <p style="text-align: center">Select File or Choose other...</p>
+
+      <!-- 👇 Video list -->
+      <div id="uploaded-videos"></div>
+      
+      
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   <!-- ==========================
+       Popup Overlay at Starting Menu
+  ========================== -->
+  <div id="Startingpopup">
+    <div id="StartingpopContainer">
+      <label id="closeStartPopup"></label>
+      <h2>Select your way </h2>
+      <p style="text-align: center">Select an option below...</p>
+
+
+       <nav class="Startingpopup">
+       <button class="starting-nav" id="transcriptionBtn"  style="background-color: rgb(253, 251, 251);">
+            <img src="{{ url_for('static', filename='icons/podcast (2).png') }}" alt="Transcription" class="nav-icon">
+            <label> Transcribe Media</label>
+
+            
+        </button>
+
+        <button class="starting-nav" id="tranSummaryBtn" style="background-color: rgb(253, 251, 251);">
+            <img src="{{ url_for('static', filename='icons/report (2).png') }}" alt="Summary" class="nav-icon">
+            <label> Transcription with Summary</label>
+            
+        </button>
+      </nav>
+      <!-- 👇 Video list -->
+      <div id="startingMenu"></div>
+      
+      
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+  <div class="container">
+    <!-- ==========================
+         Header Section
+    ========================== -->
+    <header>
+      <h1>PodiFY Transcription</h1>
+      <p class="subtitle" style="font-size: 15px;">
+        upload audio or video files to visualize their waveform and get transcriptions
+      </p>
+    </header>
+
+    <div class="content">
+      <!-- ==========================
+           Upload  Media Preview Section
+      ========================== -->
+      <div class="upload_media_preview">
+        <div class="upload-timeControls" style="background-color: #ffffff;">
+          <!-- ==========================
+               File Upload Section
+          ========================== -->
+          <div class="upload-section">
+            <div class="file-input-container">
+              <label for="file-input" class="file-input-label">
+                Choose or Upload File
+              </label>
+              <p style="font-size: 10px; color: #7e7d7d;">Audio/Video File</p>
+
+              <input type="file" id="file-input" accept=".mp3,.wav,.ogg,.flac,.mp4,.mkv,.avi,.mov" />
+              <div class="file-info" id="file-name">No file selected</div>
+            </div>
+          </div>
+
+          <!-- ==========================
+               Time Controls Section
+          ========================== -->
+          <div class="time-controls">
+            <div class="time-input">
+              <label for="starttime">Start Time(s)</label>
+              <input type="number" id="starttime" min="0" value="0" style="width: 100%;" />
+            </div>
+
+            <div class="time-input">
+              <label for="endtime">End Time(s)</label>
+              <input type="number" id="endtime" min="1" value="10" style="width: 100%;" />
+            </div>
+          </div>
+
+          <div class="duration-button" id="duration-button">
+            <button id="getDurationBtn" style="width: 100%;">Get Full Duration</button>
+          </div>
+        </div>
+
+        <!-- ==========================
+             Media Preview Section
+        ========================== -->
+        <div class="media-preview-section" id="media-preview-section" style="display: 100%;">
+          <h3 style="color: #9c9a9a;">Media Preview</h3>
+          <video id="videoPreview" controls width="100%" style="max-height: 250px; max-width: 250px; border-radius: 8px; background: #09489b; display: none;">
+            Your browser does not support the video tag.
+          </video>
+          <audio id="audioPreview" controls style="width: 100%; max-width: 400px; display: none;">
+            Your browser does not support the audio element.
+          </audio>
+          
+        </div>
+      </div>
+      
+
+      <div class="action-buttons">
+            <button id="processBtn" style="width: 100%;">Start Processing</button>
+            <!-- <button id="waveBtn">Generate Waveform</button> -->
+          </div>
+      <!-- ==========================
+           Duration Display
+      ========================== -->
+      <div class="duration-display" id="fileDuration">
+        File duration will appear here...
+      </div>
+
+      <!-- ==========================
+           Status Messages
+      ========================== -->
+      
+
+      <div class="status-section">
+        <div id="loading" class="loading">Processing your file</div>
+        <div id="error" class="error"></div>
+        <div id="success" class="success"></div>
+      </div>
+
+      <!-- ==========================
+           Results Section (Transcript + Summary)
+      ========================== -->
+      <div class="results-container">
+        <div class="result-section"  id="result-section">
+          <h3>Transcription</h3>
+          <div class="transcript-content" id="transcription">
+            Transcription will appear here...
+          </div>
+          <button class="icon-btn copy-btn" onclick="copyText('transcription')"></button>
+          <button class="icon-btn download-btn" onclick="downloadText('transcription','transcription.txt')"></button>
+        </div>
+
+        <div class="result-section summary-section">
+          <h3>Summary</h3>
+          <div class="summary-content" id="summary">
+            Summary of the transcription will appear here...
+          </div>
+          <button class="icon-btn copy-btn" onclick="copyText('summary')"></button>
+          <button class="icon-btn download-btn" onclick="downloadText('summary','summary.txt')"></button>
+        </div>
+      </div>
+
+      <!-- ==========================
+           Waveform Visualization
+      ========================== -->
+      <div class="waveform-section">
+        <div class="waveform-header">
+          <h3>Waveform Visualization</h3>
+         
+        </div>
+
+        <div class="waveform-container">
+          <canvas id="waveform-chart"></canvas>
+        </div>
+        <div class="wave-controls">
+            <button id="zoom-in" disabled>Zoom In</button>
+            <button id="zoom-out" disabled>Zoom Out</button>
+            <button id="reset-zoom" disabled>Reset Zoom</button>
+          </div>
+      </div>
+       
+    </div>
+
+    <!-- ==========================
+         Footer
+    ========================== -->
+    <footer>
+      <p>Created with Flask, Chart.js, and Web Audio API</p>
+      <p>Developed by M.Shahjhan Gondal</p>
+      <p style="font: italic;">Mail: shahjhangondal99@gmail.com</p>
+    </footer>
+  </div>
+
+  <!-- ==========================
+       App Script
+  ========================== -->
+  <script src="{{ url_for('static', filename='wave.js') }}"></script>
+</body>
+</html>

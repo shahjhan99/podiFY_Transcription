@@ -1,0 +1,562 @@
+/* ==========================
+   Global Reset & Base Styles
+   ========================== */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    min-height: 100vh;
+    padding: 5px;
+}
+
+/* ==========================
+   Container & Header Section
+   ========================== */
+.container {
+    
+    max-width: 91%;
+    margin: 0 auto;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+header {
+    background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
+    color: white;
+    padding: 25px;
+    text-align: center;
+}
+
+h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+/* ==========================
+   Content Wrapper
+   ========================== */
+.content {
+    padding: 30px;
+}
+
+/* ==========================
+   Upload + Preview + Duration 
+   Side by Side Layout
+   ========================== */
+
+
+.upload_media_preview{
+    display: flex;
+    
+    
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 5px;
+}
+
+.upload-timeControls, .media-preview-section {
+    flex: 1;
+    padding: 2px;
+    border-radius: 1px  solid   #dee2e6;
+}
+.upload-timeControls{
+    display: flex;
+    flex-basis: 30%;
+    flex-direction: column;
+    gap: 10px;
+    
+}
+/* --- Upload Section --- */
+.upload-section {
+    
+    flex: 1;
+    
+
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 25px;
+    text-align: center;
+    border: 2px dashed #d6d8db;
+    width:100%;
+}
+
+.file-input-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5px;
+}
+
+.file-input-label {
+    display: inline-block;
+    background: #4b6cb7;
+    color: white;
+    padding: 8px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    font-size: small;
+}
+
+.file-input-label:hover {
+    background: #3a5999;
+    transform: translateY(-2px);
+}
+
+#file-input {
+    display: none;
+}
+
+.file-info {
+    margin-top: 15px;
+    font-size: 0.7rem;
+    color: #495057;
+}
+
+/* --- Preview Section --- */
+.media-preview-section {
+    
+    flex: 1;
+    flex-basis: 70%;
+    width: 100%;
+    height: 100% ;
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+}
+
+.media-preview-section h3 {
+    margin-bottom: 15px;
+    color: #495057;
+    font-size: 1.2rem;
+}
+
+#videoPreview, #audioPreview {
+    margin: 0 auto;
+    display: block;
+}
+
+#audioPreview {
+    width: 100%;
+    max-width: 400px;
+}
+
+/* --- Time Controls Section --- */
+.time-controls {
+    
+    text-align: left;
+    width: 100%;
+    font-size: 12px;
+    padding: 5px;
+    background: #ffffff;
+    border-radius: 8px;
+   
+}
+
+.time-input {
+    width: 100%;   
+    flex-direction: column;
+    gap: 5px;
+}
+
+.time-input label {
+   
+    font-weight: 500;
+    color: #999896;
+}
+
+.time-input input {
+    padding: 8px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    text-align: center;
+}
+
+/* ==========================
+   Buttons
+   ========================== */
+button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    background: #4b6cb7;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+/* Vertical Navbar */
+.navbar-vertical {
+  display: flex;
+  flex-direction: column;   /* 👈 stack vertically */
+  
+  padding: 12px;
+  border-radius: 8px;
+  width: 200px;             /* adjust width */
+}
+
+/* Buttons inside navbar */
+.nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 10px;
+  text-align: left;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.nav-btn:hover {
+  background: rgba(255, 255, 255, 0.15); /* subtle hover */
+}
+
+/* Icon style */
+.nav-icon {
+  width: 32px;
+  height: 32px;
+}
+
+
+button:hover {
+    background: #3a5999;
+    transform: translateY(-2px);
+}
+
+button:disabled {
+    background: #7d786c;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Special button widths */
+.icon-btn {
+    
+  background: none;
+  border: none;
+  padding: 2px;
+  width: 15px;
+  height: 15px;
+  
+}
+
+/* Disable hover effects */
+.icon-btn:hover,
+.icon-btn:focus,
+.icon-btn:active {
+  background: white;
+  outline: none;
+  box-shadow: none;
+}
+
+
+/* Copy Icon */
+.copy-btn {
+  
+
+  background-image: url("/static/icons/copy.png"); /* or .svg */
+  background-size: contain;
+  background-repeat: no-repeat;
+  
+}
+
+/* Download Icon */
+.download-btn {
+  
+  background-image: url("/static/icons/download.png"); /* or .svg */
+  background-size: contain;
+  background-repeat: no-repeat;
+  
+}
+
+
+
+.duration-button {
+    flex: 1;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.getDurationBtn {
+
+    width: 200px;
+}
+
+#processBtn {
+    width: 15%;
+    height: 30%;
+}
+
+/* ==========================
+   Action Buttons & Duration Display
+   ========================== */
+.action-buttons {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    gap: 15px;
+    margin: 20px 0;
+    flex-wrap: wrap;
+}
+
+.duration-display {
+    text-align: center;
+    margin: 15px 0;
+    padding: 10px;
+    background: #e9ecef;
+    border-radius: 6px;
+    font-weight: 500;
+}
+
+/* ==========================
+   Results Section (Transcript + Summary)
+   ========================== */
+.results-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin: 30px 0;
+}
+
+.result-section { 
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    height: 400px;
+    width: 50%;
+    overflow-y: auto;
+    transition: all 0.3s ease; /* Add smooth transition */
+}
+.results-container {
+  display: flex;
+  gap: 20px;
+  transition: all 0.3s ease;
+}
+
+.results-container.resized {
+  width: 100%;       /* Expand container fully */
+}
+
+.results-container.resized .result-section {
+  flex: 1;           /* Make sections grow equally */
+}
+
+.hidden {
+  display: none;
+}
+.active {
+    background-color: #e0e0e0;
+    border-color: #007bff;
+}
+.results-container {
+  display: flex;
+  gap: 20px;
+  transition: all 0.3s ease;
+}
+
+.result-section {
+  flex: 1;              /* take equal space */
+  min-width: 0;         /* prevents overflow */
+  transition: all 0.3s ease;
+}
+
+/* When only transcription should expand */
+.results-container.expanded-transcription .result-section.transcription-section {
+  flex: 1 1 100%;       /* take full width */
+}
+
+.results-container.expanded-transcription .result-section.summary-section {
+  display: none;        /* hide summary */
+}
+
+
+
+
+
+.result-section h3 {
+    background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
+    color: white;
+    padding: 12px 15px;
+    margin: -20px -20px 20px -20px;
+    border-radius: 8px 8px 0 0;
+    font-size: 1.2rem;
+}
+
+.transcript-content, .summary-content {
+    line-height: 1.8;
+    color: #495057;
+}
+
+/* ==========================
+   Waveform Section
+   ========================== */
+.waveform-section {
+    margin-top: 30px;
+}
+
+.waveform-container {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    margin-top: 20px;
+    position: relative;
+    height: 400px;
+}
+
+.waveform-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.waveform-header h3 {
+    
+    color: white;
+    padding: 8px 15px;
+    border-radius: 6px;
+    font-size: 1.2rem;
+}
+
+.waveform-section {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            height: 500px;
+            background-color: white;
+            border-radius: 8px;
+           
+            overflow: hidden;
+        }
+        
+        .waveform-header {
+            width: 100%;
+            height: 12%;
+            padding: 15px 1px;
+            background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
+            color: white;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .waveform-header h3 {
+            margin: 0;
+            font-weight: 500;
+        }
+        
+        .waveform-container {
+            flex: 1;
+            padding: 20px;
+            position: relative;
+        }
+        
+        .wave-controls {
+            margin: 0;
+            left: 90%;
+            display: flex;
+            gap: 10px;
+            padding: 10px 20px;
+            justify-content: flex-start;
+            align-items: left;
+            width: fit-content;
+            
+            border-top: 1px solid #edefe9; 
+        }
+
+
+
+/* ==========================
+   Status Messages
+   ========================== */
+.status-section {
+    margin: 20px 0;
+    text-align: center;
+}
+
+.loading {
+    display: none;
+    color: #0d6efd;
+    font-size: 1.1rem;
+}
+
+.error {
+    color: #dc3545;
+    font-weight: 500;
+    margin: 15px 0;
+    padding: 10px;
+    background: #f8d7da;
+    border-radius: 6px;
+    display: none;
+}
+
+.success {
+    color: #198754;
+    font-weight: 500;
+    margin: 15px 0;
+    padding: 10px;
+    background: #d1e7dd;
+    border-radius: 6px;
+    display: none;
+}
+
+/* ==========================
+   Footer
+   ========================== */
+footer {
+    text-align: center;
+    margin-top: 40px;
+    padding: 20px;
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+/* ==========================
+   Responsive
+   ========================== */
+@media (max-width: 768px) {
+    .upload-preview-wrapper {
+        flex-direction: column;
+    }
+
+    .results-container {
+        grid-template-columns: 1fr;
+    }
+
+    .waveform-container {
+        height: 300px;
+    }
+
+    .result-section {
+        height: 300px;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    .content {
+        padding: 20px;
+    }
+}
