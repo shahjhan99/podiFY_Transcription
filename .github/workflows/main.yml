@@ -1,0 +1,13 @@
+name: PodiFY Transcription
+
+on:
+  push:
+   branches:
+   - main
+   
+
+jobs:
+  deploy:   # any name can be set
+    runs-on: ubuntu-latest
+    steps:
+    
