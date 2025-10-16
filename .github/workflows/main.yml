@@ -30,8 +30,8 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - name: Deploy wave.html to S3
+      - name: Deploy wave.html and static files to S3
         run: |
-             aws s3 sync ./templates s3://podify-app --delete
-             aws s3 sync ./static s3://podify-app/static --delete
-        
+              aws s3 sync ./templates s3://podify-app --delete
+              aws s3 sync ./static s3://podify-app/static --delete
+
