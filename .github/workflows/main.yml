@@ -33,5 +33,5 @@ jobs:
       - name: Deploy wave.html to S3
         run: |
              aws s3 sync ./templates s3://podify-app --delete
-             aws s3 sync ./static s3://podify-app --delete
+             aws s3 sync ./static s3://podify-app/static --delete
         
