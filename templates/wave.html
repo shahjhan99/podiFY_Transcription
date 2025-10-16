@@ -8,16 +8,14 @@
   <!-- ==========================
        External Styles & Scripts
   ========================== -->
-  <link rel="stylesheet" href="static/wave.css" />
-  <link rel="stylesheet" href="static/navbar-Style.css" />
-
+  <link rel="stylesheet" href="{{ url_for('static', filename='wave.css') }}" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/hammer.js@2.0.8"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@1.2.1"></script>
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-
-  <!-- Your local JS files -->
+  <!-- Link to your JS -->
   <script src="static/navbar.js"></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='navbar-Style.css') }}" />
 </head>
 
 
