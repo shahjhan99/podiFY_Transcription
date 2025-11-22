@@ -17,7 +17,7 @@ jobs:
         echo "$EC2_SSH_KEY" > ec2_key.pem
         chmod 600 ec2_key.pem
 
-    - name: Deploy files to EC2 (rsync with exclude)
+    - name: Deploy files to EC2 (rsync with exclude) 
       run: |
         rsync -avz \
           -e "ssh -i ec2_key.pem -o StrictHostKeyChecking=no" \
