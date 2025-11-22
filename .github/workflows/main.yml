@@ -1,4 +1,4 @@
-name: PodiFY Transcription
+name: PodiFY Transcription Deploy to EC2
 
 on:
   push:
@@ -10,27 +10,46 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 1️⃣ Checkout the repo
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # 2️⃣ Set up Python
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: "3.11"
 
+      # 3️⃣ Install dependencies
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
-
-      - name: Deploy wave.html and static files to S3
+      # 4️⃣ Copy files to EC2
+      - name: Deploy files to EC2
+        env:
+          EC2_USER: ubuntu
+          EC2_HOST: ${{ secrets.EC2_PUBLIC_IP }}
+          EC2_KEY: ${{ secrets.EC2_SSH_KEY }}  # private key stored as GitHub secret
         run: |
-          aws s3 sync ./templates s3://podify-app --delete
-          aws s3 sync ./static s3://podify-app/static --delete
+          echo "$EC2_KEY" > ec2_key.pem
+          chmod 600 ec2_key.pem
+          scp -i ec2_key.pem -o StrictHostKeyChecking=no -r ./ ${EC2_USER}@${EC2_HOST}:/home/ubuntu/podiFY_Transcription
+
+      # 5️⃣ Restart Flask app on EC2
+      - name: Restart Flask app
+        env:
+          EC2_USER: ubuntu
+          EC2_HOST: ${{ secrets.EC2_PUBLIC_IP }}
+          EC2_KEY: ${{ secrets.EC2_SSH_KEY }}
+        run: |
+          echo "$EC2_KEY" > ec2_key.pem
+          chmod 600 ec2_key.pem
+          ssh -i ec2_key.pem -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} << 'EOF'
+            cd /home/ubuntu/podiFY_Transcription
+            # Stop existing app if running
+            pkill -f "python main.py" || true
+            # Start app in background with nohup
+            nohup python3 main.py &
+          EOF
