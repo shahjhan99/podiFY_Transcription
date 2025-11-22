@@ -1,72 +1,42 @@
-name: PodiFY Transcription Deploy to EC2
+name: Deploy to EC2
 
 on:
   push:
-    branches:
-      - main
+    branches: [ "main" ]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout the repo
-      - name: Checkout code
-        uses: actions/checkout@v4
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 1
 
-      # 2️⃣ Install Python dependencies
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    - name: Remove .git folder to avoid permission errors
+      run: rm -rf .git
 
-      # 3️⃣ Copy files to EC2 (FIXED)
-      - name: Copy files to EC2
-        env:
-          EC2_USER: ubuntu
-          EC2_HOST: ${{ secrets.EC2_PUBLIC_IP }}
-          EC2_KEY: ${{ secrets.EC2_SSH_KEY }}
-        run: |
-          echo "$EC2_KEY" > ec2_key.pem
-          chmod 600 ec2_key.pem
-          # Clean destination directory first to avoid permission issues
-          ssh -i ec2_key.pem -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} "rm -rf /home/ubuntu/podiFY_Transcription && mkdir -p /home/ubuntu/podiFY_Transcription"
-          # Copy files
-          scp -i ec2_key.pem -o StrictHostKeyChecking=no -r ./ ${EC2_USER}@${EC2_HOST}:/home/ubuntu/podiFY_Transcription
+    - name: Create SSH key file
+      run: |
+        echo "$EC2_SSH_KEY" > ec2_key.pem
+        chmod 600 ec2_key.pem
+      shell: bash
 
-      # 4️⃣ Set up environment and restart Flask app
-      - name: Setup environment and restart Flask app
-        env:
-          EC2_USER: ubuntu
-          EC2_HOST: ${{ secrets.EC2_PUBLIC_IP }}
-          EC2_KEY: ${{ secrets.EC2_SSH_KEY }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
-        run: |
-          echo "$EC2_KEY" > ec2_key.pem
-          chmod 600 ec2_key.pem
-          ssh -i ec2_key.pem -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} << 'EOF'
-            cd /home/ubuntu/podiFY_Transcription
-            
-            # Set up environment variables on EC2
-            echo "export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" >> ~/.bashrc
-            echo "export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" >> ~/.bashrc
-            echo "export GROQ_API_KEY=$GROQ_API_KEY" >> ~/.bashrc
-            source ~/.bashrc
-            
-            # Install Python dependencies on EC2
-            pip3 install -r requirements.txt
-            
-            # Stop any running Flask app
-            pkill -f "python main.py" || true
-            pkill -f "python3 main.py" || true
-            
-            # Start the Flask app with environment variables
-            nohup python3 main.py > flask.log 2>&1 &
-            echo "Flask app restarted successfully"
-            
-            # Wait a moment and check if it's running
-            sleep 5
-            ps aux | grep python
-          EOF
+    - name: Deploy files to EC2
+      run: |
+        scp -i ec2_key.pem -o StrictHostKeyChecking=no -r ./ ${EC2_USER}@${EC2_PUBLIC_IP}:/home/ubuntu/podiFY_Transcription
+      env:
+        EC2_USER: ubuntu
+        EC2_PUBLIC_IP: ${{ secrets.EC2_PUBLIC_IP }}
+
+    - name: SSH into EC2 and restart service
+      run: |
+        ssh -i ec2_key.pem -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_PUBLIC_IP} << 'EOF'
+        cd /home/ubuntu/podiFY_Transcription
+        tmux kill-session -t podifyapp || true
+        tmux new -d -s podifyapp "python3 app.py"
+        EOF
+      env:
+        EC2_USER: ubuntu
+        EC2_PUBLIC_IP: ${{ secrets.EC2_PUBLIC_IP }}
