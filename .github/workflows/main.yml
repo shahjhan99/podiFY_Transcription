@@ -29,9 +29,9 @@ jobs:
         run: |
           echo "$EC2_KEY" > ec2_key.pem
           chmod 600 ec2_key.pem
-          rsync -avz -e "ssh -i ec2_key.pem -o StrictHostKeyChecking=no" \
-            --exclude '.git' ./ ${EC2_USER}@${EC2_HOST}:/home/ubuntu/podiFY_Transcription
-
+          # Clean destination and copy
+          ssh -i ec2_key.pem -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} "rm -rf /home/ubuntu/podiFY_Transcription && mkdir -p /home/ubuntu/podiFY_Transcription"
+          scp -i ec2_key.pem -o StrictHostKeyChecking=no -r ./ ${EC2_USER}@${EC2_HOST}:/home/ubuntu/podiFY_Transcription
 
       # 4️⃣ Restart Flask app
       - name: Restart Flask app
@@ -44,6 +44,11 @@ jobs:
           chmod 600 ec2_key.pem
           ssh -i ec2_key.pem -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} << 'EOF'
             cd /home/ubuntu/podiFY_Transcription
+            # Install Python dependencies on EC2
+            pip3 install -r requirements.txt
+            # Stop any running Flask app
             pkill -f "python main.py" || true
-            nohup python3 main.py &
+            # Start the Flask app
+            nohup python3 main.py > flask.log 2>&1 &
+            echo "Flask app restarted successfully"
           EOF
