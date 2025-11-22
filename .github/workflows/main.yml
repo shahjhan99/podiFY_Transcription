@@ -20,7 +20,7 @@ jobs:
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      # 3️⃣ Copy files to EC2 (FIXED VERSION)
+      # 3️⃣ Copy files to EC2 (FIXED)
       - name: Copy files to EC2
         env:
           EC2_USER: ubuntu
@@ -29,27 +29,44 @@ jobs:
         run: |
           echo "$EC2_KEY" > ec2_key.pem
           chmod 600 ec2_key.pem
-          # Clean the destination directory first
+          # Clean destination directory first to avoid permission issues
           ssh -i ec2_key.pem -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} "rm -rf /home/ubuntu/podiFY_Transcription && mkdir -p /home/ubuntu/podiFY_Transcription"
-          # Now copy files
+          # Copy files
           scp -i ec2_key.pem -o StrictHostKeyChecking=no -r ./ ${EC2_USER}@${EC2_HOST}:/home/ubuntu/podiFY_Transcription
 
-      # 4️⃣ Restart Flask app
-      - name: Restart Flask app
+      # 4️⃣ Set up environment and restart Flask app
+      - name: Setup environment and restart Flask app
         env:
           EC2_USER: ubuntu
           EC2_HOST: ${{ secrets.EC2_PUBLIC_IP }}
           EC2_KEY: ${{ secrets.EC2_SSH_KEY }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
         run: |
           echo "$EC2_KEY" > ec2_key.pem
           chmod 600 ec2_key.pem
           ssh -i ec2_key.pem -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} << 'EOF'
             cd /home/ubuntu/podiFY_Transcription
+            
+            # Set up environment variables on EC2
+            echo "export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" >> ~/.bashrc
+            echo "export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" >> ~/.bashrc
+            echo "export GROQ_API_KEY=$GROQ_API_KEY" >> ~/.bashrc
+            source ~/.bashrc
+            
             # Install Python dependencies on EC2
             pip3 install -r requirements.txt
+            
             # Stop any running Flask app
             pkill -f "python main.py" || true
-            # Start the Flask app
+            pkill -f "python3 main.py" || true
+            
+            # Start the Flask app with environment variables
             nohup python3 main.py > flask.log 2>&1 &
             echo "Flask app restarted successfully"
+            
+            # Wait a moment and check if it's running
+            sleep 5
+            ps aux | grep python
           EOF
