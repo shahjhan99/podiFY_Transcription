@@ -14,7 +14,7 @@ jobs:
 
     - name: Create SSH key file
       run: |
-        echo "$EC2_SSH_KEY" > ec2_key.pem
+        printf "%s\n" "$EC2_SSH_KEY" > ec2_key.pem
         chmod 600 ec2_key.pem
 
     - name: Deploy files to EC2 (rsync with exclude) 
