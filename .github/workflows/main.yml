@@ -20,7 +20,7 @@ jobs:
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      # 3️⃣ Copy files to EC2
+      # 3️⃣ Copy files to EC2 (FIXED VERSION)
       - name: Copy files to EC2
         env:
           EC2_USER: ubuntu
@@ -29,8 +29,9 @@ jobs:
         run: |
           echo "$EC2_KEY" > ec2_key.pem
           chmod 600 ec2_key.pem
-          # Clean destination and copy
+          # Clean the destination directory first
           ssh -i ec2_key.pem -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} "rm -rf /home/ubuntu/podiFY_Transcription && mkdir -p /home/ubuntu/podiFY_Transcription"
+          # Now copy files
           scp -i ec2_key.pem -o StrictHostKeyChecking=no -r ./ ${EC2_USER}@${EC2_HOST}:/home/ubuntu/podiFY_Transcription
 
       # 4️⃣ Restart Flask app
