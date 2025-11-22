@@ -25,7 +25,10 @@ jobs:
 
     - name: Deploy files to EC2
       run: |
-        scp -i ec2_key.pem -o StrictHostKeyChecking=no -r ./ ${EC2_USER}@${EC2_PUBLIC_IP}:/home/ubuntu/podiFY_Transcription
+        scp -i ec2_key.pem -o StrictHostKeyChecking=no -r ./ \
+           --exclude '.git' \
+           ${EC2_USER}@${EC2_HOST}:/home/ubuntu/podiFY_Transcription
+
       env:
         EC2_USER: ubuntu
         EC2_PUBLIC_IP: ${{ secrets.EC2_PUBLIC_IP }}
