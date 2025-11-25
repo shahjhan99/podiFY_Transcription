@@ -17,22 +17,14 @@ jobs:
         printf "%s\n" "$EC2_SSH_KEY" > ec2_key.pem
         chmod 600 ec2_key.pem
 
-    - name: Deploy files to EC2 (rsync with exclude) 
-      run: |
-        rsync -avz \
-          -e "ssh -i ec2_key.pem -o StrictHostKeyChecking=no" \
-          --exclude ".git" \
-          --exclude "ec2_key.pem" \
-          ./ ubuntu@${EC2_PUBLIC_IP}:/home/ubuntu/podiFY_Transcription
-      env:
-        EC2_PUBLIC_IP: ${{ secrets.EC2_PUBLIC_IP }}
-
-    - name: SSH into EC2 and restart service
+    - name: SSH into EC2 and deploy project
       run: |
         ssh -i ec2_key.pem -o StrictHostKeyChecking=no ubuntu@${EC2_PUBLIC_IP} << 'EOF'
-        cd /home/ubuntu/podiFY_Transcription
-        tmux kill-session -t podifyapp || true
-        tmux new -d -s podifyapp "python3 app.py"
+          cd /home/ubuntu/podiFY_Transcription
+          # Stop previous tmux session if running
+          tmux kill-session -t podifyapp || true
+          # Start the app in a new tmux session
+          tmux new -d -s podifyapp "python3 app.py"
         EOF
       env:
         EC2_PUBLIC_IP: ${{ secrets.EC2_PUBLIC_IP }}
